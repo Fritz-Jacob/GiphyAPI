@@ -3,14 +3,17 @@ console.log("script.js loaded");
 
 const apiKey = "7YsGGa75GkwVCsk7VvLA0DZsK5TlIR5H";
 
-const endpoint = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=batman&limit=8`;
 
 
 const gifContainer = document.querySelector("#gif-container");
 const fetchButton = document.querySelector("#fetch-gif-btn");
+const searchInput = document.querySelector("#search-input");
 
-async function fetchGifs() {
+
+async function fetchGifs(searchTerm) {
     try {
+        const endpoint = `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${encodeURIComponent(searchTerm)}&limit=8`;
+
         const response = await fetch(endpoint);
 
         if (!response.ok) {
@@ -30,8 +33,16 @@ async function fetchGifs() {
     }
 }
 
+
 fetchButton.addEventListener("click", async function() {
-    const images = await fetchGifs();
+    const searchTerm = searchInput.value.trim();
+
+    if (searchTerm === "") {
+        alert("Please enter something to search for!");
+        return;
+    }
+
+    const images = await fetchGifs(searchTerm);
 
     gifContainer.innerHTML = "";
 
